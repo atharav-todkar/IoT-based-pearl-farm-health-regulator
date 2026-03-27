@@ -15,27 +15,33 @@ The **IoT Based Pearl Farm Health Regulator** is a smart aquaculture system desi
 The system uses multiple ESP32 microcontrollers and sensors to ensure optimal environmental conditions, improving pearl quality, reducing manual effort, and enabling sustainable farming practices.
 
 ---
-
 ##  Problem Statement
 
-Traditional pearl farming lacks real-time monitoring and automation, leading to:
+Traditional pearl farming methods lack real-time monitoring and automation, which leads to unstable water conditions and poor productivity.
 
-* Fluctuations in water quality
-* Poor pearl quality
-* High mortality rates
-* Increased manual labor
+Key challenges include:
 
-This project solves these challenges using IoT and automation.
+* No continuous monitoring of water parameters like pH, TDS, and temperature
+* Sudden environmental changes affecting oyster health
+* High mortality rates and inconsistent pearl quality
+* Dependence on manual labor and lack of data-driven decisions
+
+These limitations reduce efficiency and make it difficult for farmers to maintain optimal conditions for pearl cultivation.
 
 ---
 
 ##  Objectives
 
-* Real-time monitoring of pH, TDS, and temperature
-* Automatic water quality regulation
-* Reduction in manual intervention
-* Improved pearl yield and consistency
-* Enable smart and sustainable aquaculture
+The main objectives of this project are:
+
+* To design an IoT-based system for real-time monitoring of water quality parameters
+* To maintain optimal conditions for pearl oyster growth
+* To automate water regulation using sensor-based control
+* To reduce manual effort and improve system efficiency
+* To provide remote monitoring using a cloud-based dashboard
+* To promote sustainable and smart aquaculture practices
+
+
 
 ---
 
