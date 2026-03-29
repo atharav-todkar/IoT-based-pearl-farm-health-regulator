@@ -61,13 +61,13 @@ Communication is done using ESP-NOW protocol, and data is sent to the cloud (Bly
 
 ### 🔹 Block Diagram
 
-![Block Diagram](docs/block-diagram.jpg)
+![Block Diagram](docs/Block_Diagram.jpg)
 
 ---
 
 ### 🔹 Flowchart
 
-![Flowchart](docs/flowchart.jpg)
+![Flowchart](docs/Flowchart.jpg)
 
 
 ##  Hardware Components
