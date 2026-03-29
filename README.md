@@ -57,6 +57,18 @@ The system is based on a distributed IoT architecture using multiple ESP32 nodes
 Communication is done using ESP-NOW protocol, and data is sent to the cloud (Blynk) for remote monitoring.
 
 ---
+##  System Design
+
+### 🔹 Block Diagram
+
+![Block Diagram](docs/block-diagram.jpg)
+
+---
+
+### 🔹 Flowchart
+
+![Flowchart](docs/flowchart.jpg)
+
 
 ##  Hardware Components
 
