@@ -84,7 +84,7 @@ Communication is done using ESP-NOW protocol, and data is sent to the cloud (Bly
 * Submersible Pump
 
  Total Project Cost: ₹11,281
-
+📄 Detailed Component List: [View Here](docs/component.pdf)
 ---
 
 ## ⚙️ Working Principle
