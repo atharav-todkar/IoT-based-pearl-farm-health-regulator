@@ -1,0 +1,40 @@
+/*
+ * config.h.example
+ * ─────────────────────────────────────────────────────────────
+ * Credentials template for Pearl Farm IoT nodes.
+ *
+ * HOW TO USE:
+ *   1. Duplicate this file and rename it to: config.h
+ *   2. Fill in your actual values below in config.h
+ *   3. config.h is listed in .gitignore — it will NEVER
+ *      be committed to GitHub. Only this example file is.
+ *
+ * WARNING: Never paste real passwords or API keys in any
+ * .ino file directly. Always use this config.h approach.
+ * ─────────────────────────────────────────────────────────────
+ */
+
+#ifndef CONFIG_H
+#define CONFIG_H
+
+// ── Wi-Fi ─────────────────────────────────────────────────────
+#define CONF_WIFI_SSID  "YOUR_WIFI_NETWORK_NAME"
+#define CONF_WIFI_PASS  "YOUR_WIFI_PASSWORD"
+
+// ── Blynk ─────────────────────────────────────────────────────
+// Get these from: Blynk Console → Templates → Your Template
+#define CONF_BLYNK_TEMPLATE_ID   "YOUR_BLYNK_TEMPLATE_ID"
+#define CONF_BLYNK_TEMPLATE_NAME "YOUR_BLYNK_TEMPLATE_NAME"
+#define CONF_BLYNK_AUTH_TOKEN    "YOUR_BLYNK_AUTH_TOKEN"
+
+// ── ThingSpeak ────────────────────────────────────────────────
+// Get this from: ThingSpeak → My Channels → API Keys → Write API Key
+#define CONF_THINGSPEAK_API_KEY  "YOUR_THINGSPEAK_WRITE_API_KEY"
+
+// ── ESP-NOW Peer MAC Addresses (actuator node only) ───────────
+// To find MAC address: upload a simple sketch with
+// Serial.println(WiFi.macAddress()) and read Serial Monitor.
+#define CONF_NODE1_MAC {0x00, 0x00, 0x00, 0x00, 0x00, 0x00}
+#define CONF_NODE2_MAC {0x00, 0x00, 0x00, 0x00, 0x00, 0x00}
+
+#endif // CONFIG_H
