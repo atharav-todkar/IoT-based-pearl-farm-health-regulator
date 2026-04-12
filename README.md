@@ -79,6 +79,8 @@ The system is built on a **three-layer IoT architecture** designed for reliabili
 >
 > **Solution:** Split into two dedicated nodes communicating over **ESP-NOW** (peer-to-peer, no router needed, ~1ms latency). The main node handles all sensing. The actuator node handles relays, oxygen pump, wave generator, and cloud upload — eliminating all interference.
 
+📐 [Detailed system architecture →](docs/system_architecture.md)
+
 ---
 
 ## 🛠️ Hardware Components
@@ -95,7 +97,7 @@ The system is built on a **three-layer IoT architecture** designed for reliabili
 | **Oxygen Pump** | Submersible, relay-controlled | Aeration every 5 minutes |
 | **Wave Generator** | Timer-controlled | Water circulation every 30 seconds |
 
-📋 [Full Component List with specifications →](docs/component.pdf)
+📋 [Full component list with specifications →](docs/component.pdf)
 
 ---
 
@@ -106,6 +108,8 @@ The system is built on a **three-layer IoT architecture** designed for reliabili
 - **Cloud Platforms:** Blynk · ThingSpeak · Google Sheets (auto-logging every 2 hrs)
 - **Signal Processing:** Moving Average Filter (10 samples) · Temperature Compensation for pH/TDS
 - **Automation Logic:** Threshold-based control with hysteresis (prevents valve chattering)
+
+🔧 [Working principle explained →](docs/working_principle.md) · [Features list →](docs/features.md)
 
 ---
 
@@ -175,8 +179,6 @@ DS18B20 temperature readings were cross-validated against a mercury thermometer 
 
 ![Flowchart](docs/Flowchart.jpg)
 
-📋 [Full flowchart PDF →](docs/final_flowq_chart.pdf)
-
 ---
 
 ## 🚀 Getting Started
@@ -201,11 +203,13 @@ cd IoT-based-pearl-farm-health-regulator
 3. Fill in your Wi-Fi, Blynk, and ThingSpeak credentials in `config.h`
 4. Flash `esp32_main_node.ino` to the first **ESP32** (sensor node)
 5. Flash `firmware/esp32_actuator_node/esp32_actuator_node.ino` to the second **ESP32**
-6. Update MAC addresses in `config.h` (run a MAC scanner sketch first to find them)
+6. Update MAC addresses in `config.h` (run a MAC scanner sketch first)
 7. Calibrate pH sensor via Serial Monitor: type `enterph` then `calph`
 8. Power on → verify 20×4 LCD → check Blynk + ThingSpeak dashboards
 
 > ⚠️ `config.h` is in `.gitignore` — it will never be committed. Never paste credentials directly in `.ino` files.
+
+📖 [Detailed working principle →](docs/working_principle.md)
 
 ---
 
@@ -213,26 +217,36 @@ cd IoT-based-pearl-farm-health-regulator
 
 ```
 IoT-based-pearl-farm-health-regulator/
+│
 ├── docs/
-│   ├── Block_Diagram.jpg               # System architecture diagram
-│   ├── Flowchart.jpg                   # Control logic flowchart
-│   ├── component.pdf                   # Full BOM with datasheets
-│   ├── final_flowq_chart.pdf           # Detailed flowchart
-│   ├── patent.pdf                      # Granted design patent
+│   ├── Block_Diagram.jpg            # System architecture diagram
+│   ├── Flowchart.jpg                # Control logic flowchart
+│   ├── component.pdf                # Full BOM with datasheets
+│   ├── patent.pdf                   # Granted design patent
 │   ├── IIT BOMBAY-Sanction letter.pdf  # TIH fellowship proof
-│   ├── ieee paper.docx                 # ICFT 2025 IEEE paper
-│   └── CONTRIBUTORS.md                 # Team roles and contributions
+│   ├── ieee paper.docx              # ICFT 2025 IEEE paper
+│   ├── contributors.md              # Team roles & contributions
+│   ├── system_architecture.md       # Architecture description
+│   ├── working_principle.md         # Sensor & circuit working
+│   ├── features.md                  # Feature list
+│   ├── objectives.md                # Project objectives
+│   ├── results.md                   # Test results & data
+│   ├── future_scope.md              # Planned enhancements
+│   ├── comparison.md                # Comparison with existing systems
+│   └── problem_statement.md         # Problem & motivation
+│
 ├── firmware/
 │   ├── esp32_main_node/
-│   │   ├── esp32_main_node.ino         # Main sensor node firmware
-│   │   └── config.h.example            # Credentials template (safe to commit)
+│   │   ├── esp32_main_node.ino      # Main sensor node firmware
+│   │   └── config.h.example         # Credentials template (safe to commit)
 │   ├── esp32_actuator_node/
-│   │   └── esp32_actuator_node.ino     # Actuator + relay control firmware
+│   │   └── esp32_actuator_node.ino  # Actuator + relay control firmware
 │   └── reference_sketches/
-│       ├── tds_only.ino                # Early TDS-only test sketch
-│       ├── tds_ph_combined.ino         # Mid-iteration TDS + pH sketch
-│       └── ph_calibration_test.ino     # pH calibration sketch (Arduino Uno)
-├── .gitignore                          # Excludes config.h (credentials)
+│       ├── tds_only.ino             # Early TDS-only test sketch
+│       ├── tds_ph_combined.ino      # Mid-iteration TDS + pH sketch
+│       └── ph_calibration_test.ino  # pH calibration sketch (Arduino Uno)
+│
+├── .gitignore                       # Excludes config.h (credentials)
 └── README.md
 ```
 
@@ -275,7 +289,7 @@ IoT-based-pearl-farm-health-regulator/
 
 **Faculty Guide:** Dr. Jayashree Prashant Kharat, Professor — DKTE's Textile & Engineering Institute, Ichalkaranji *(Shivaji University, Kolhapur)*
 
-📋 [Detailed individual contributions →](docs/CONTRIBUTORS.md)
+📋 [Detailed individual contributions →](docs/contributors.md)
 
 ---
 
@@ -297,6 +311,12 @@ This project was supported by the **Technology Innovation Hub (TIH) for IoT & Io
 - **Duration:** December 2024 – October 2025
 
 [View Sanction Letter →](docs/IIT%20BOMBAY-Sanction%20letter.pdf)
+
+---
+
+## 🔍 Problem Statement & Objectives
+
+📄 [Problem statement →](docs/problem_statement.md) · [Project objectives →](docs/objectives.md) · [Comparison with existing systems →](docs/comparison.md)
 
 ---
 
