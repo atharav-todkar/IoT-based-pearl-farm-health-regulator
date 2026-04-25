@@ -1,53 +1,22 @@
-##  System Architecture
+# System Architecture
 
-The system follows a distributed IoT architecture using multiple ESP32 microcontrollers for efficient monitoring and control.
+The IoT-Based Pearl Farm Health Regulator is built on a 
+three-layer architecture designed for reliability and modularity.
 
-###  Node Structure
+![System Architecture](system_architecture.svg)
 
-* **Node 1 (Sensing Node):**
-  Measures pH and temperature using DFRobot pH sensor and DS18B20 temperature sensor
+## Layer 1 — Sensing Layer
+- **DFRobot pH Sensor** — 0–14 pH, analog output 0–3V → GPIO 33 (ADC1)
+- **Keyestudio TDS Sensor** — 0–1000 ppm, analog output 0–2.3V → GPIO 34 (ADC1)
+- **DS18B20 Temperature** — -55°C to +125°C, One-Wire digital → GPIO 4
 
-* **Node 2 (Sensing Node):**
-  Measures Total Dissolved Solids (TDS) using Keyestudio TDS sensor
+## Layer 2 — Processing Layer
+- **ESP32 Main Node** — reads all sensors, applies averaging filter 
+  and temperature compensation, communicates via ESP-NOW
+- **ESP32 Actuator Node** — receives data via ESP-NOW, controls 
+  solenoid valves, oxygen pump, and wave generator via relays
 
-* **Main Node (Processing Unit):**
-  Receives data from all nodes, processes it, displays values on a 20x4 LCD, and uploads data to the cloud
-
-* **Control Node (Actuation Unit):**
-  Controls oxygen pump and wave generator using relay modules
-
----
-
-###  Communication
-
-* ESP-NOW protocol is used for communication between ESP32 nodes
-* Provides fast, low-power, and connectionless data transmission
-* No external Wi-Fi router required
-
----
-
-###  Cloud Integration
-
-* Data is sent to the Blynk IoT platform
-* Enables real-time remote monitoring
-* Provides alerts and visualization of parameters
-
----
-
-###  Automation Logic
-
-The system continuously monitors water parameters and performs automatic control actions:
-
-* pH < 5.9 or pH > 8 → Activate water correction system
-* TDS > 550 ppm → Drain and refill tank automatically
-* Oxygen pump → Runs every 5 minutes
-* Wave generator → Runs every 30 seconds
-
----
-
-###  Key Advantages
-
-* Distributed architecture ensures reliability
-* Real-time processing and quick response
-* Low power and cost-efficient design
-* Scalable for multiple tanks
+## Layer 3 — Cloud & Control Layer
+- **Blynk** — real-time farmer mobile monitoring
+- **ThingSpeak** — time-series graphs and trend analysis
+- **Google Sheets** — automatic data logging every 2 hours
