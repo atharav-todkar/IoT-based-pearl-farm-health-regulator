@@ -40,37 +40,13 @@ This project delivers a **deployment-ready IoT solution** that automates water q
 | ⚙️ **Full Automation** | Automated water replacement, oxygen regulation, wave generation |
 
 ---
-
 ## 🔬 System Architecture
 
-The system is built on a **three-layer IoT architecture** designed for reliability and modularity:
+![System Architecture](docs/system_architecture.svg)
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                        SENSING LAYER                            │
-│   DFRobot pH Sensor  │  Keyestudio TDS Sensor  │  DS18B20 Temp │
-│         (0-14 pH)    │      (0-1000 ppm)        │  (-55 to 125°C)│
-└──────────────┬──────────────────────────────────┬───────────────┘
-               │  Analog/Digital Signal            │ One-Wire
-               ▼                                  ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                    PROCESSING LAYER                             │
-│                  ESP32 Main Node                                │
-│        • ADC1 channels — no Wi-Fi conflict                      │
-│        • Averaging Filter + Temperature Compensation            │
-│        • ESP-NOW peer-to-peer to actuator node                  │
-│        • LCD Display (20×4 I2C)                                 │
-└──────────────────────────────────┬──────────────────────────────┘
-                                   │ Wi-Fi
-                                   ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                  CLOUD & CONTROL LAYER                          │
-│   Web Dashboard ◄── Google Sheets ◄── Blynk / ThingSpeak       │
-│                                                                 │
-│   Automation Logic:                                             │
-│   pH > 8.0 or TDS > 550 ppm  ──► Solenoid Valves (12V DC)      │
-│   Oxygen Pump (every 5 min)  │  Wave Generator (every 30 sec)  │
-└─────────────────────────────────────────────────────────────────┘
+### Key Engineering Decision — Why ESP-NOW + Separate Actuator Node?
+...rest stays same
+
 ```
 
 ### Key Engineering Decision — Why ESP-NOW + Separate Actuator Node?
