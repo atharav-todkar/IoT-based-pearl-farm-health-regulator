@@ -50,7 +50,7 @@ The system has three parts.
 |---|---|---|
 | **Node 1: Sensing** | Arduino + Keyestudio TDS sensor + DFRobot pH sensor + DS18B20 temperature sensor | Reads all three water parameters and sends them to the Main Node over **serial communication** |
 | **Main Node: Control & Display** | *[Add board name, e.g. ESP32]* | Shows live values on a 20×4 I2C LCD, runs the threshold logic, drives the **tank refill** and **tank drain** solenoid valves, and sends data to the dashboard over Wi-Fi |
-| **Node 2: Scheduled Automation** | ESP32 + **DS3231 RTC** | Runs time-based tasks: **oxygen pump relay** and **wave generator relay** |
+| **Node 2: Scheduled Automation** | ESP32 + **DS1302 RTC** | Runs time-based tasks: **oxygen pump relay** and **wave generator relay** |
 
 **Dashboard:** a custom Water Quality Dashboard shows live temperature, pH and TDS gauges with an "all parameters normal" status indicator.
 
@@ -58,7 +58,7 @@ The system has three parts.
 
 ### Why separate nodes?
 
-Sensing, control and scheduled actuation are split so that a fault or a blocking task in one does not disturb the others. Node 1 only reads sensors and never handles Wi-Fi, so analog readings stay stable. Node 2 uses a DS3231 RTC so schedules survive power cycles and do not depend on network time.
+Sensing, control and scheduled actuation are split so that a fault or a blocking task in one does not disturb the others. Node 1 only reads sensors and never handles Wi-Fi, so analog readings stay stable. Node 2 uses a DS1302 RTC with battery backup, so schedules keep running through power cuts and do not depend on network time.
 
 > The earlier version used three ESP32 boards on Wi-Fi + MQTT at once, which caused ADC2/Wi-Fi conflicts and unstable communication. This architecture replaces it.
 
@@ -72,7 +72,7 @@ Sensing, control and scheduled actuation are split so that a fault or a blocking
 |---|---|---|
 | **Arduino** (Node 1) | Analog inputs, serial output | Sensor acquisition |
 | **ESP32 DevKit V1** (Node 2) | Dual-core, Wi-Fi + BT, 3.3V | Scheduled automation |
-| **DS3231 RTC** | I2C, temperature-compensated, battery backup | Accurate timekeeping for scheduled tasks |
+| **DS1302 RTC** | 3-wire serial (CLK, DAT, RST), coin-cell battery backup | Timekeeping for scheduled tasks |
 | **DFRobot pH Sensor V2** | 0–14 pH, ±0.1, BNC probe | Water acidity |
 | **Keyestudio TDS Sensor** | 0–1000 ppm, ±10% FS | Dissolved solids |
 | **DS18B20** | -55°C to +125°C, ±0.5°C, One-Wire | Water temperature |
@@ -89,7 +89,7 @@ Sensing, control and scheduled actuation are split so that a fault or a blocking
 ## 💻 Software Stack
 
 - **Firmware:** Arduino IDE · Embedded C/C++
-- **Communication:** Serial (Node 1 → Main Node) · Wi-Fi · HTTP POST · I2C · One-Wire
+- **Communication:** Serial (Node 1 → Main Node) · Wi-Fi · HTTP POST · I2C (LCD) · One-Wire (DS18B20) · 3-wire serial (DS1302)
 - **Dashboard:** custom-built Water Quality Dashboard *[add stack and hosting, e.g. HTML/JS + Firebase]*
 - **Signal processing:** 10-sample moving average · temperature compensation for pH/TDS
 - **Control logic:** threshold-based with hysteresis to prevent valve chattering
@@ -116,9 +116,11 @@ Node 1 reads TDS, pH, temperature ──serial──► Main Node
                          Wait 2.5 min → done
 ```
 
-**Scheduled tasks (Node 2, DS3231 RTC):**
+**Scheduled tasks (Node 2, DS1302 RTC):**
 - Oxygen pump cycles every **5 minutes**
 - Wave generator runs every **30 seconds**
+
+> The DS1302 is not temperature-compensated and can drift by a few seconds per day. This does not matter for the short cycles above. For time-of-day schedules (such as the planned algae feeder), the clock should be re-synced periodically, or the DS1302 can be upgraded to a DS3231.
 
 ---
 
@@ -159,7 +161,7 @@ DS18B20 readings were cross-checked against a mercury thermometer. TDS readings 
 ### Prerequisites
 
 - Arduino IDE 2.x with the ESP32 board package
-- Libraries: `OneWire`, `DallasTemperature`, `LiquidCrystal_I2C`, `RTClib` (for DS3231)
+- Libraries: `OneWire`, `DallasTemperature`, `LiquidCrystal_I2C`, and a DS1302 library *[add the one you use, e.g. `Rtc by Makuna` or `virtuabotixRTC`]*
 
 ### Installation
 
@@ -171,7 +173,7 @@ cd IoT-based-pearl-farm-health-regulator
 1. Flash the **sensing node** firmware to the Arduino (Node 1).
 2. Go to `firmware/main_node/`, copy `config.h.example` → `config.h`, and add your Wi-Fi credentials and dashboard endpoint.
 3. Flash the **main node** firmware.
-4. Flash `firmware/esp32_actuator_node/` to Node 2 (ESP32) and set the DS3231 time.
+4. Flash `firmware/esp32_actuator_node/` to Node 2 (ESP32). Insert a coin cell in the DS1302 module and set its time.
 5. Wire Node 1 to the Main Node serial pins.
 6. Calibrate pH via Serial Monitor: `enterph` then `calph`.
 7. Power on, check the LCD, then open the dashboard to confirm live values.
@@ -255,6 +257,7 @@ The grant funded hardware development, field deployment and testing at the Kolha
 ## 🔮 Future Scope
 
 - [ ] **Automatic algae feeder** (next planned development): RTC-scheduled feeding controlled by Node 2
+- [ ] Upgrade the RTC to a temperature-compensated DS3231 for more accurate time-of-day schedules
 - [ ] Dosing pump for pH correction without full water replacement
 - [ ] Dissolved oxygen and turbidity sensors
 - [ ] Solar power for off-grid deployment
