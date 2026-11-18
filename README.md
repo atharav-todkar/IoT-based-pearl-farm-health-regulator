@@ -11,7 +11,7 @@
 
 **An IoT system for real-time water quality monitoring and automated regulation in freshwater pearl aquaculture.**
 
-[🏆 Achievements](#-key-achievements) · [🔬 Architecture](#-system-architecture) · [📊 Results](#-results--validation) · [🚀 Getting Started](#-getting-started)
+[🏆 Achievements](#-key-achievements) · [🎥 Demo Videos](#-demo-videos) · [🔬 Architecture](#-system-architecture) · [📊 Results](#-results--validation) · [🚀 Getting Started](#-getting-started)
 
 </div>
 
@@ -27,6 +27,16 @@ This project was funded by IIT Bombay and protected by a granted design patent.
 | 🎓 **TIH Chanakya Fellowship, IIT Bombay** | **₹6,00,000** grant from the Technology Innovation Hub (TIH) for IoT & IoE, IIT Bombay · Dec 2024 – Oct 2025 · [View sanction letter](docs/IIT%20BOMBAY-Sanction%20letter.pdf) |
 | 📡 **IEEE Xplore Publication** | ICFT 2025 · [ieeexplore.ieee.org/document/11336776](https://ieeexplore.ieee.org/document/11336776) |
 | 🌾 **Field Deployment** | Validated in a live pearl farm, Kolhapur, Maharashtra · Dec 2024 – Oct 2025 |
+
+---
+
+## 🎥 Demo Videos
+
+| Video | Description |
+|---|---|
+| [▶ Video 1: Prototype Demo](https://drive.google.com/file/d/15O178Sh0gxaciJQ90-YeVvZiltmIgR5E/view?usp=sharing) | Working prototype of Pearlspire |
+| [▶ Video 2: How Automation Works](https://drive.google.com/file/d/15PQvW2PNvmjmwknGAQeCilpNH8dMOQ7E/view?usp=sharing) | How the system automates water monitoring and regulation for pearl farming |
+| [▶ Video 3: Real-Time Implementation](https://drive.google.com/file/d/15ZbWUj-vFLMjtxFd3772oIJVPhmJ1iY_/view?usp=sharing) | Deployment and operation in a live pearl farm |
 
 ---
 
@@ -71,7 +81,7 @@ Sensing, control and scheduled actuation are split so that a fault or a blocking
 | Component | Specification | Role |
 |---|---|---|
 | **Arduino** (Node 1) | Analog inputs, serial output | Sensor acquisition |
-| **ESP32 DevKit V1** (Node 2) | Dual-core, Wi-Fi + BT, 3.3V | Scheduled automation |
+| **ESP32 DevKit V1** (Main Node, Node 2) | Dual-core, Wi-Fi + BT, 3.3V | Control, display and scheduled automation |
 | **DS1302 RTC** | 3-wire serial (CLK, DAT, RST), coin-cell battery backup | Timekeeping for scheduled tasks |
 | **DFRobot pH Sensor V2** | 0–14 pH, ±0.1, BNC probe | Water acidity |
 | **Keyestudio TDS Sensor** | 0–1000 ppm, ±10% FS | Dissolved solids |
@@ -90,7 +100,7 @@ Sensing, control and scheduled actuation are split so that a fault or a blocking
 
 - **Firmware:** Arduino IDE · Embedded C/C++
 - **Communication:** Serial (Node 1 → Main Node) · Wi-Fi · HTTP POST · I2C (LCD) · One-Wire (DS18B20) · 3-wire serial (DS1302)
-- **Dashboard:** custom-built Water Quality Dashboard 
+- **Dashboard:** custom-built Water Quality Dashboard
 - **Signal processing:** 10-sample moving average · temperature compensation for pH/TDS
 - **Control logic:** threshold-based with hysteresis to prevent valve chattering
 
@@ -297,5 +307,3 @@ B.E. Electronics & Telecommunication Engineering, DKTE's Textile and Engineering
 <div align="center">
 
 *Built for real-world aquaculture · Validated in the field · Funded by IIT Bombay · Protected by design patent*
-
-</div>
