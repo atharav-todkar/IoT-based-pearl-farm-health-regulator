@@ -90,7 +90,7 @@ Sensing, control and scheduled actuation are split so that a fault or a blocking
 
 - **Firmware:** Arduino IDE · Embedded C/C++
 - **Communication:** Serial (Node 1 → Main Node) · Wi-Fi · HTTP POST · I2C (LCD) · One-Wire (DS18B20) · 3-wire serial (DS1302)
-- **Dashboard:** custom-built Water Quality Dashboard *[add stack and hosting, e.g. HTML/JS + Firebase]*
+- **Dashboard:** custom-built Water Quality Dashboard 
 - **Signal processing:** 10-sample moving average · temperature compensation for pH/TDS
 - **Control logic:** threshold-based with hysteresis to prevent valve chattering
 
