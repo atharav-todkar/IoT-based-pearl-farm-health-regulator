@@ -49,7 +49,7 @@ The system has three parts.
 | Block | Hardware | Responsibility |
 |---|---|---|
 | **Node 1: Sensing** | Arduino + Keyestudio TDS sensor + DFRobot pH sensor + DS18B20 temperature sensor | Reads all three water parameters and sends them to the Main Node over **serial communication** |
-| **Main Node: Control & Display** | *[Add board name, e.g. ESP32]* | Shows live values on a 20×4 I2C LCD, runs the threshold logic, drives the **tank refill** and **tank drain** solenoid valves, and sends data to the dashboard over Wi-Fi |
+| **Main Node: Control & Display** | **ESP32** | Shows live values on a 20×4 I2C LCD, runs the threshold logic, drives the **tank refill** and **tank drain** solenoid valves, and sends data to the dashboard over Wi-Fi |
 | **Node 2: Scheduled Automation** | ESP32 + **DS1302 RTC** | Runs time-based tasks: **oxygen pump relay** and **wave generator relay** |
 
 **Dashboard:** a custom Water Quality Dashboard shows live temperature, pH and TDS gauges with an "all parameters normal" status indicator.
