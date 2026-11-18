@@ -44,7 +44,7 @@ This project was funded by IIT Bombay and protected by a granted design patent.
 
 Pearl farming is precision-sensitive: pH, Total Dissolved Solids (TDS) and temperature directly affect oyster survival, nacre formation and pearl quality. Manual monitoring is slow, error-prone and hard to scale.
 
-Pearlspire automates this. It combines embedded sensing, a central controller, a custom web dashboard and electromechanical actuation in a compact device that a farmer can operate. It monitors water quality continuously, corrects it by automated water exchange, and runs aeration and water circulation on a schedule.
+Pearlspire automates this. It combines embedded sensing, a central controller, a custom web dashboard and electromechanical actuation in a compact device that a farmer can operate. It monitors water quality continuously, corrects it by automated water exchange, and runs aeration and water circulation on a timed cycle.
 
 It was tested in a 10,000 L freshwater tank with 3,000 oyster shells, where it reduced manual monitoring effort by roughly 70% and held water parameters within ±5% of target.
 
@@ -60,15 +60,15 @@ The system has three parts.
 |---|---|---|
 | **Node 1: Sensing** | Arduino + Keyestudio TDS sensor + DFRobot pH sensor + DS18B20 temperature sensor | Reads all three water parameters and sends them to the Main Node over **serial communication** |
 | **Main Node: Control & Display** | **ESP32** | Shows live values on a 20×4 I2C LCD, runs the threshold logic, drives the **tank refill** and **tank drain** solenoid valves, and sends data to the dashboard over Wi-Fi |
-| **Node 2: Scheduled Automation** | ESP32 + **DS1302 RTC** | Runs time-based tasks: **oxygen pump relay** and **wave generator relay** |
+| **Node 2: Timed Automation** | ESP32 + **DS1302 RTC** | Runs the **oxygen pump relay** and **wave generator relay** on timed cycles. The RTC is included for time-of-day scheduling of the planned algae feeder |
 
 **Dashboard:** a custom Water Quality Dashboard shows live temperature, pH and TDS gauges with an "all parameters normal" status indicator.
 
-> 🔧 **Planned:** an **automatic algae feeder** (shown in the diagram) is the next development step. It is not built yet. See [Future Scope](#-future-scope).
+> 🔧 **Planned:** an **automatic algae feeder** (shown in the diagram) is the next development step. It is not built yet. The DS1302 RTC on Node 2 is there to support its time-of-day feeding schedule. See [Future Scope](#-future-scope).
 
 ### Why separate nodes?
 
-Sensing, control and scheduled actuation are split so that a fault or a blocking task in one does not disturb the others. Node 1 only reads sensors and never handles Wi-Fi, so analog readings stay stable. Node 2 uses a DS1302 RTC with battery backup, so schedules keep running through power cuts and do not depend on network time.
+Sensing, control and timed actuation are split so that a fault or a blocking task in one does not disturb the others. Node 1 only reads sensors and never handles Wi-Fi, so analog readings stay stable. Node 2 runs the aeration and circulation cycles independently of the water-exchange logic.
 
 > The earlier version used three ESP32 boards on Wi-Fi + MQTT at once, which caused ADC2/Wi-Fi conflicts and unstable communication. This architecture replaces it.
 
@@ -81,8 +81,8 @@ Sensing, control and scheduled actuation are split so that a fault or a blocking
 | Component | Specification | Role |
 |---|---|---|
 | **Arduino** (Node 1) | Analog inputs, serial output | Sensor acquisition |
-| **ESP32 DevKit V1** (Main Node, Node 2) | Dual-core, Wi-Fi + BT, 3.3V | Control, display and scheduled automation |
-| **DS1302 RTC** | 3-wire serial (CLK, DAT, RST), coin-cell battery backup | Timekeeping for scheduled tasks |
+| **ESP32 DevKit V1** (Main Node, Node 2) | Dual-core, Wi-Fi + BT, 3.3V | Control, display and timed automation |
+| **DS1302 RTC** | 3-wire serial (CLK, DAT, RST), coin-cell battery backup | Time-of-day clock for the planned algae feeder schedule |
 | **DFRobot pH Sensor V2** | 0–14 pH, ±0.1, BNC probe | Water acidity |
 | **Keyestudio TDS Sensor** | 0–1000 ppm, ±10% FS | Dissolved solids |
 | **DS18B20** | -55°C to +125°C, ±0.5°C, One-Wire | Water temperature |
@@ -126,11 +126,17 @@ Node 1 reads TDS, pH, temperature ──serial──► Main Node
                          Wait 2.5 min → done
 ```
 
-**Scheduled tasks (Node 2, DS1302 RTC):**
+**Timed tasks (Node 2):**
 - Oxygen pump cycles every **5 minutes**
 - Wave generator runs every **30 seconds**
 
-> The DS1302 is not temperature-compensated and can drift by a few seconds per day. This does not matter for the short cycles above. For time-of-day schedules (such as the planned algae feeder), the clock should be re-synced periodically, or the DS1302 can be upgraded to a DS3231.
+These are simple interval cycles, so they do not depend on the time of day.
+
+### ⏰ Role of the RTC (planned use)
+
+The DS1302 RTC on Node 2 keeps the correct time of day, including through power cuts (coin-cell backup) and without Wi-Fi. It is included for the **planned automatic algae feeder**, which needs clock-based schedules such as "feed at a set time each day". The current aeration and circulation cycles do not need it.
+
+> The DS1302 is not temperature-compensated and can drift by a few seconds per day. This is acceptable for feeding schedules if the clock is re-synced periodically, and the RTC can be upgraded to a DS3231 if tighter accuracy is needed.
 
 ---
 
@@ -183,7 +189,7 @@ cd IoT-based-pearl-farm-health-regulator
 1. Flash the **sensing node** firmware to the Arduino (Node 1).
 2. Go to `firmware/main_node/`, copy `config.h.example` → `config.h`, and add your Wi-Fi credentials and dashboard endpoint.
 3. Flash the **main node** firmware.
-4. Flash `firmware/esp32_actuator_node/` to Node 2 (ESP32). Insert a coin cell in the DS1302 module and set its time.
+4. Flash `firmware/esp32_actuator_node/` to Node 2 (ESP32). If you use the RTC, insert a coin cell in the DS1302 module and set its time.
 5. Wire Node 1 to the Main Node serial pins.
 6. Calibrate pH via Serial Monitor: `enterph` then `calph`.
 7. Power on, check the LCD, then open the dashboard to confirm live values.
@@ -215,7 +221,7 @@ IoT-based-pearl-farm-health-regulator/
 ├── firmware/
 │   ├── sensing_node/                # Arduino (Node 1)
 │   ├── main_node/                   # Control, LCD, valves, dashboard upload
-│   ├── esp32_actuator_node/         # Node 2: RTC schedules
+│   ├── esp32_actuator_node/         # Node 2: timed automation
 │   └── reference_sketches/
 ├── dashboard/                       # Custom Water Quality Dashboard
 ├── .gitignore
@@ -266,8 +272,8 @@ The grant funded hardware development, field deployment and testing at the Kolha
 
 ## 🔮 Future Scope
 
-- [ ] **Automatic algae feeder** (next planned development): RTC-scheduled feeding controlled by Node 2
-- [ ] Upgrade the RTC to a temperature-compensated DS3231 for more accurate time-of-day schedules
+- [ ] **Automatic algae feeder** (next planned development): feeding at set times of day, controlled by Node 2 and driven by the **DS1302 RTC**, which keeps time through power cuts and without Wi-Fi
+- [ ] Upgrade the RTC to a temperature-compensated DS3231 if tighter time accuracy is needed
 - [ ] Dosing pump for pH correction without full water replacement
 - [ ] Dissolved oxygen and turbidity sensors
 - [ ] Solar power for off-grid deployment
@@ -307,3 +313,5 @@ B.E. Electronics & Telecommunication Engineering, DKTE's Textile and Engineering
 <div align="center">
 
 *Built for real-world aquaculture · Validated in the field · Funded by IIT Bombay · Protected by design patent*
+
+</div>
